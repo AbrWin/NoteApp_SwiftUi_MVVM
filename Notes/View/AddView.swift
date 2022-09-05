@@ -15,7 +15,10 @@ struct AddView: View {
     
     var body: some View {
         VStack{
-            Text("Add Note")
+            let isNewNote = model.updateItem == nil
+            let titleModal = isNewNote ? "Add Notes" : "Edit your note"
+    
+            Text(isNewNote ? "Add Notes" : "Edit your note")
                 .font(.largeTitle)
                 .bold()
             Spacer()
@@ -24,15 +27,20 @@ struct AddView: View {
             DatePicker("Select date:", selection: $model.date)
             Spacer()
             Button(action: {
-                model.saveData(context: context)
+                if model.updateItem != nil{
+                    model.updateNote(context: context)
+                }else{
+                    model.saveData(context: context)
+                }                
             }){
                 Label(
                     title: { Text("Save").foregroundColor(.white).bold()},
                     icon: { Image(systemName: "plus").foregroundColor(.white)})
             }.padding()
             .frame(width: UIScreen.main.bounds.width - 30)
-            .background(Color.blue)
+            .background(model.note == "" ? Color.gray : Color.blue)
             .cornerRadius(8)
+            .disabled(model.note == "" ? true : false)
         }.padding()
         
     }
